@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    username: root
+    password: 'Dmsqo1403!'
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/catch-table?user=root&password=Dmsqo1403!&autoreconnect=false
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  sql:
+    init:
+      mode: always
+  flyway:
+    user: root
+    password: 'Dmsqo1403!'
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
