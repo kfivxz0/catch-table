@@ -22,8 +22,8 @@ public class UserController {
     @Description(
         "회원가입"
     )
-    @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@Validated @RequestBody SignUpRequestDto request, Errors errors) {
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto request, Errors errors) {
         userService.signUp(request, errors);
         return ResponseEntity.ok().build();
     }

@@ -11,29 +11,30 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
-    private final PathMatcher pathMatcher = new AntPathMatcher();
     private final CustomUserDetailsService customUserDetailsService;
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        String requestUrl = request.getRequestURI();
 
-        if (Arrays.stream(SecurityPath.WHITE_LIST).anyMatch(white -> pathMatcher.match(white, request.getRequestURI()))) {
+        if (isWhiteListUrl(requestUrl)) {
             log.info("{}, WHITE_LIST 포함", request.getRequestURI());
             chain.doFilter(request, response);
+
             return;
         }
+
+        String authorizationHeader = request.getHeader("Authorization");
 
         // JWT 헤더가 있을 경우
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -53,13 +54,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
-            chain.doFilter(request, response);
-        } else {
-            // 토큰이 없거나 유효하지 않은 경우 403 상태 코드와 메시지를 반환
-            response.setContentType("application/json;charset=utf-8");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("접근이 허용되지 않습니다. 유효한 토큰을 제공하십시오.");
-            response.getWriter().flush();
         }
+
+        chain.doFilter(request, response);
+    }
+
+    private boolean isWhiteListUrl(String requestUrl) {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+
+        return Stream.of(SecurityPath.WHITE_LIST)
+            .anyMatch(pattern -> pathMatcher.match(pattern, requestUrl));
     }
 }

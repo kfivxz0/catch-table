@@ -59,8 +59,6 @@ public class UserService {
 
     @Transactional
     public void signUp(SignUpRequestDto request, Errors errors) {
-        validationErrors.checkDtoErrors(errors, "회원가입 양식에 일치하지 않는 양식이 있습니다.");
-
         if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
             log.error("이미 사용중인 아이디 또는 이메일 입니다.");
             throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "Username or Email is Already in Use");

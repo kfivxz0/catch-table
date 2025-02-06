@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SecurityPath {
     public static final String[] WHITE_LIST = {
-        "/api/users/sign-up",
-        "/api/users/login"
+        "/api/users/login",
+        "/api/users/signup"
     };
 }
