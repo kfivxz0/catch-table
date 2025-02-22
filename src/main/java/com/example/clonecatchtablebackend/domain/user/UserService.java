@@ -61,7 +61,7 @@ public class UserService {
     public void signUp(SignUpRequestDto request, Errors errors) {
         if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
             log.error("이미 사용중인 아이디 또는 이메일 입니다.");
-            throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "Username or Email is Already in Use");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username or Email is Already in Use");
         }
 
         User newUser = User.builder()
