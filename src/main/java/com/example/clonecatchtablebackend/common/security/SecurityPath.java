@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 public class SecurityPath {
     public static final String[] WHITE_LIST = {
         "/api/users/login",
-        "/api/users/signup"
+        "/api/users/signup",
+        "/api/auth/sendAuthCode",
+        "/api/auth/validationAuthCode"
     };
 }
